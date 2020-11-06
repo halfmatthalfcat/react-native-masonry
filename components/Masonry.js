@@ -1,13 +1,12 @@
-import { View, ListView, Image, Text, Dimensions } from 'react-native';
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import Task from 'data.task';
-import isEqual from 'lodash.isequal';
 import differenceBy from 'lodash.differenceby';
+import isEqual from 'lodash.isequal';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
+import { Dimensions, FlatList, View } from 'react-native';
+import styles from '../styles/main';
+import Column from './Column';
 
 import { resolveImage } from './model';
-import Column from './Column';
-import styles from '../styles/main';
 
 // assignObjectColumn :: Number -> [Objects] -> [Objects]
 export const assignObjectColumn = (nColumns, index, targetObject) => ({...targetObject, ...{ column: index % nColumns }});
@@ -59,12 +58,10 @@ export default class Masonry extends Component {
 
 	constructor(props) {
 		super(props);
-		// Assuming users don't want duplicated images, if this is not the case we can always change the diff check
-		this.ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => !containMatchingUris(r1, r2) });
 		// This creates an array of [1..n] with values of 0, each index represent a column within the masonry
 		const columnHeights = generateColumnHeights(props.columns);
 		this.state = {
-			dataSource: this.ds.cloneWithRows([]),
+			data: [],
 			dimensions: {},
 			initialOrientation: true,
 			_sortedData: [],
@@ -124,9 +121,7 @@ export default class Masonry extends Component {
 	resolveBricks({ bricks, columns, spacing, priority }, offSet = 0) {
 		if (bricks.length === 0) {
 			// clear and re-render
-			this.setState(state => ({
-				dataSource: state.dataSource.cloneWithRows([])
-			}));
+			this.setState({ data: [] });
 		}
 
 		// Calculate column width in case balance priority
@@ -137,7 +132,7 @@ export default class Masonry extends Component {
 		}
 
 		// Sort bricks and place them into their respectable columns
-		// Issues arrise if state changes occur in the midst of a resolve
+		// Issues arise if state changes occur in the midst of a resolve
 		bricks
 			.map((brick, index) => assignObjectColumn(columns, index, brick))
 			.map((brick, index) => assignObjectIndex(offSet + index, brick))
@@ -148,7 +143,7 @@ export default class Masonry extends Component {
 					this.setState(state => {
 						const sortedData = this._insertIntoColumn(resolvedBrick, state._sortedData, state._columnHeights, columnWidth);
 						return {
-							dataSource: state.dataSource.cloneWithRows(sortedData),
+							data: sortedData,
 							_sortedData: sortedData,
 							_resolvedData: [...state._resolvedData, resolvedBrick]
 						};
@@ -229,26 +224,26 @@ export default class Masonry extends Component {
 	render() {
 		return (
 		<View style={{flex: 1}} onLayout={(event) => this._setParentDimensions(event)}>
-		<ListView
-			contentContainerStyle={styles.masonry__container}
-			dataSource={this.state.dataSource}
-			enableEmptySections
-			scrollRenderAheadDistance={100}
-			removeClippedSubviews={false}
-			onEndReached={this._delayCallEndReach}
-			onEndReachedThreshold={this.props.onEndReachedThreshold}
-			renderRow={(data, sectionId, rowID) => (
-			<Column
-				data={data}
-				columns={this.props.columns}
-				parentDimensions={this.state.dimensions}
-				imageContainerStyle={this.props.imageContainerStyle}
-				customImageComponent={this.props.customImageComponent}
-				customImageProps={this.props.customImageProps}
-				spacing={this.props.spacing}
-				key={`RN-MASONRY-COLUMN-${rowID}`} />
-			)}
-			refreshControl={this.props.refreshControl} />
+			<FlatList
+				contentContainerStyle={styles.masonry__container}
+				data={this.state.data}
+				removeClippedSubviews={false}
+				onEndReached={this._delayCallEndReach}
+				onEndReachedThreshold={this.props.onEndReachedThreshold}
+				renderItem={(data, index) => (
+					<Column
+						data={data.item}
+						columns={this.props.columns}
+						parentDimensions={this.state.dimensions}
+						imageContainerStyle={this.props.imageContainerStyle}
+						customImageComponent={this.props.customImageComponent}
+						customImageProps={this.props.customImageProps}
+						spacing={this.props.spacing}
+						key={`RN-MASONRY-COLUMN-${index}`}
+					/>
+				)}
+				refreshControl={this.props.refreshControl}
+			/>
 		</View>
 		);
 	}

@@ -31,13 +31,21 @@ export default class Column extends Component {
 
 	componentWillMount() {
 		this.setState({
-			images: this._resizeImages(this.props.data, this.props.parentDimensions, this.props.columns)
+			images: this._resizeImages(
+				this.props.data,
+				this.props.parentDimensions,
+				this.props.columns,
+			)
 		});
 	}
 
 	componentWillReceiveProps(nextProps) {
 		this.setState({
-			images: this._resizeImages(nextProps.data, nextProps.parentDimensions, nextProps.columns)
+			images: this._resizeImages(
+				nextProps.data,
+				nextProps.parentDimensions,
+				nextProps.columns,
+			)
 		});
 	}
 
@@ -60,7 +68,7 @@ export default class Column extends Component {
 
 	// Resize image while maintain aspect ratio
 	// _resizeByColumns :: ImgDimensions , parentDimensions, nColumns  -> AdjustedDimensions
-	_resizeByColumns (imgDimensions = { width: 0, height: 0 }, parentDimensions, nColumns=2) {
+	_resizeByColumns (imgDimensions = { width: 0, height: 0 }, parentDimensions, nColumns= 2) {
 		const { height, width } = parentDimensions;
 
 		// The gutter is 1% of the available view width
@@ -107,11 +115,7 @@ export default class Column extends Component {
 		const key = `RN-MASONRY-BRICK-${brick.column}-${data.index}`;
 		const { imageContainerStyle, customImageComponent, customImageProps } = this.props;
 		const props = { ...brick, gutter, key, imageContainerStyle, customImageComponent, customImageProps };
-
-		return (
-			<Brick
-			  {...props} />
-		);
+		return <Brick { ...props } />;
 	}
 
 	// _keyExtractor :: item -> id
@@ -128,12 +132,12 @@ export default class Column extends Component {
 				  styles.masonry__column
 			  ]}>
 			  <FlatList
-				key={this.props.columnKey}
-				data={this.state.images}
-				keyExtractor={this._keyExtractor}
-				renderItem={this._renderBrick}
+					key={this.props.columnKey}
+					data={this.state.images}
+					keyExtractor={this._keyExtractor}
+					renderItem={this._renderBrick}
 				/>
 			</View>
-		)
+		);
 	}
 }
