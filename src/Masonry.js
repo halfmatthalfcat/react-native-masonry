@@ -3,7 +3,7 @@ import isEqual from 'lodash.isequal';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Dimensions, FlatList, View } from 'react-native';
-import styles from '../styles/main';
+import styles from './styles';
 import Column from './Column';
 
 import { resolveImage } from './model';

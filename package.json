@@ -1,17 +1,14 @@
 {
   "name": "@halfmatthalfcat/react-native-masonry",
-  "version": "0.5.1",
+  "version": "0.6.0",
   "description": "A react-native component for a masonry layout",
-  "main": "./components/Masonry.js",
+  "main": "Masonry.js",
   "scripts": {
+    "build": "node scripts/build.js && babel src --out-dir dist",
     "test": "jest"
   },
   "author": "Brandon Him",
-  "files": [
-    "/components",
-    "/styles",
-    "index.js"
-  ],
+  "files": [ "/src" ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/halfmatthalfcat/react-native-masonry.git"
@@ -40,10 +37,15 @@
     "react-native": "^0.63.3"
   },
   "devDependencies": {
+    "@babel/cli": "^7.12.1",
+    "@babel/core": "^7.12.3",
+    "@babel/preset-env": "^7.12.1",
     "babel-jest": "^26.6.2",
     "babel-preset-react-native": "^4.0.1",
+    "fs-extra": "^9.0.1",
     "jest": "^26.6.2",
     "jest-react-native": "^18.0.0",
+    "metro-react-native-babel-preset": "^0.64.0",
     "react": "17.0.1",
     "react-native": "^0.63.3",
     "react-test-renderer": "^17.0.1"
