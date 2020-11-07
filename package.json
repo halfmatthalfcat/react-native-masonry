@@ -1,6 +1,6 @@
 {
   "name": "@halfmatthalfcat/react-native-masonry",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "A react-native component for a masonry layout",
   "main": "Masonry.js",
   "scripts": {
@@ -8,7 +8,6 @@
     "test": "jest"
   },
   "author": "Brandon Him",
-  "files": [ "/src" ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/halfmatthalfcat/react-native-masonry.git"
